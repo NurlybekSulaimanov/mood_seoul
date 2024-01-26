@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/mood_seoul/static/css/main.f67cd956.css",
-    "main.js": "/mood_seoul/static/js/main.9c64a397.js",
+    "main.js": "/mood_seoul/static/js/main.81d74346.js",
     "static/media/linking-park.jpg": "/mood_seoul/static/media/linking-park.37f86ecb3eabc17dca21.jpg",
     "static/media/1.jpg": "/mood_seoul/static/media/1.8c867e5c4e3854e28752.jpg",
     "static/media/2.jpg": "/mood_seoul/static/media/2.8927284c2686778f8379.jpg",
@@ -23,10 +23,10 @@
     "static/media/youtube.png": "/mood_seoul/static/media/youtube.6751813e0bd17927950c.png",
     "index.html": "/mood_seoul/index.html",
     "main.f67cd956.css.map": "/mood_seoul/static/css/main.f67cd956.css.map",
-    "main.9c64a397.js.map": "/mood_seoul/static/js/main.9c64a397.js.map"
+    "main.81d74346.js.map": "/mood_seoul/static/js/main.81d74346.js.map"
   },
   "entrypoints": [
     "static/css/main.f67cd956.css",
-    "static/js/main.9c64a397.js"
+    "static/js/main.81d74346.js"
   ]
 }
