@@ -1,11 +1,12 @@
 import React, { Component } from "react";
-import logo from "./photo/moodseoul.jpg";
-import userLogo from "./photo/person-grey.png";
 import Calendar from "react-calendar";
 import band from "./photo/G-Idle.jpg";
 import "./App.css";
 import { Navigate } from "react-router-dom";
 import { CButton } from "@coreui/react";
+import Header from "./header";
+import Navbar from "./navbar";
+import BottomNavbar from "./bottomNavbar";
 
 class Prereservation extends Component {
   state = {
@@ -29,144 +30,6 @@ class Prereservation extends Component {
       screenWidth: window.innerWidth,
     });
   };
-  _header() {
-    return (
-      <div
-        style={{
-          height: "80px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <img
-          src={logo}
-          style={{ height: "80px", width: "150px", cursor: "pointer" }}
-          alt="logo"
-          onClick={() => {
-            this.setState({
-              loginNav: true,
-              navRoute: "/",
-            });
-          }}
-        />
-        <button
-          style={{
-            backgroundColor: "transparent",
-            height: "30px",
-            width: "70px",
-            border: ".5px solid",
-            borderRadius: "3rem",
-            cursor: "pointer",
-            margin: "1.5rem",
-            fontSize: "12px",
-          }}
-          onClick={() => {
-            this.setState({
-              loginNav: true,
-              navRoute: "/login",
-            });
-          }}
-        >
-          Logout
-        </button>
-      </div>
-    );
-  }
-  _navbar() {
-    return (
-      <div
-        className="navbar"
-        style={{
-          borderBottom: "1px solid",
-          borderTop: "1px solid",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: "0",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            width: "30rem",
-            alignItems: "center",
-          }}
-        >
-          <div
-            style={{
-              cursor: "pointer",
-              marginRight: "40px",
-              fontWeight: "700",
-            }}
-            onClick={() => {
-              this.setState({
-                loginNav: true,
-                navRoute: "/prereservation",
-              });
-            }}
-          >
-            <span>RESERVATION</span>
-          </div>
-          <div
-            style={{
-              cursor: "pointer",
-              marginRight: "40px",
-              fontWeight: "700",
-            }}
-            onClick={() => {
-              this.setState({
-                loginNav: true,
-                navRoute: "/artists",
-              });
-            }}
-          >
-            <span>ARTISTS</span>
-          </div>
-          <div
-            style={{
-              cursor: "pointer",
-              marginRight: "40px",
-              fontWeight: "700",
-            }}
-            onClick={() => {
-              this.setState({
-                loginNav: true,
-                navRoute: "/info",
-              });
-            }}
-          >
-            <span>INFO</span>
-          </div>
-        </div>
-        <div
-          style={{
-            borderLeft: "1px solid",
-            display: "flex",
-            alignItems: "center",
-            cursor: "pointer",
-            paddingLeft: "2rem",
-            paddingRight: "2rem",
-
-            height: "40px",
-          }}
-          onClick={() => {
-            this.setState({
-              loginNav: true,
-              navRoute: "/logout",
-            });
-          }}
-        >
-          <img
-            src={userLogo}
-            alt="user"
-            style={{ height: "15px", width: "15px", paddingRight: ".25rem" }}
-          />
-          <span>Nurik</span>
-        </div>
-      </div>
-    );
-  }
 
   _schedule() {
     const { screenWidth } = this.state;
@@ -182,20 +45,21 @@ class Prereservation extends Component {
         <div
           style={{
             display: "flex",
-            flexDirection: "column",
+            flexDirection: screenWidth < 600 ? "column" : "row",
           }}
         >
           <div
             style={{
-              width: "100%",
+              width: screenWidth < 600 ? "100%" : "50%",
               height: "435px",
+              borderRight: screenWidth < 600 ? "none" : ".5px solid",
             }}
           >
-            <Calendar locale="ko-KR" />
+            <Calendar locale="en-EN" />
           </div>
           <div
             style={{
-              width: "100%",
+              width: screenWidth < 600 ? "100%" : "50%",
               display: "flex",
               flexDirection: "column",
             }}
@@ -204,10 +68,11 @@ class Prereservation extends Component {
               style={{
                 height: "60px",
                 overflow: "hidden",
+                borderRight: "2px solid transparent",
                 width: "100%",
               }}
             >
-              <Calendar locale="ko-KR" />
+              <Calendar locale="en-EN" />
             </div>
             <div
               style={{
@@ -230,8 +95,8 @@ class Prereservation extends Component {
                 src={band}
                 alt="band"
                 style={{
-                  height: "50%",
-                  width: "70%",
+                  height: "65%",
+                  width: "85%",
                   marginBottom: ".5rem",
                 }}
               />
@@ -251,6 +116,7 @@ class Prereservation extends Component {
                     navRoute: "/reservation",
                   });
                 }}
+                style={screenWidth >= 700 ? {} : { width: "100%" }}
               >
                 예약
               </CButton>
@@ -262,19 +128,20 @@ class Prereservation extends Component {
   }
 
   render() {
+    const { screenWidth } = this.state;
     return (
       <div
         className="App"
         style={{
-          padding: "1rem 3rem",
+          padding: screenWidth < 700 ? "10px" : "1rem 3rem",
           display: "flex",
           justifyContent: "center",
           position: "relative",
         }}
       >
         <div style={{ maxWidth: "920px", width: "100%" }}>
-          {this._header()}
-          {this._navbar()}
+          <Header />
+          {screenWidth <= 700 ? <BottomNavbar /> : <Navbar />}
           {this._schedule()}
           {this.state.loginNav && <Navigate to={this.state.navRoute} />}
         </div>

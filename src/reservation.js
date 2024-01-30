@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import logo from "./photo/moodseoul.jpg";
 import userLogo from "./photo/person-grey.png";
 import map from "./photo/table_map.jpg";
 import "./App.css";
 import { Navigate } from "react-router-dom";
 import { CButton } from "@coreui/react";
+import Header from "./header";
 
 class Reservation extends Component {
   state = {
@@ -28,50 +28,7 @@ class Reservation extends Component {
       screenWidth: window.innerWidth,
     });
   };
-  _header() {
-    return (
-      <div
-        style={{
-          height: "80px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <img
-          src={logo}
-          style={{ height: "80px", width: "150px", cursor: "pointer" }}
-          alt="logo"
-          onClick={() => {
-            this.setState({
-              loginNav: true,
-              navRoute: "/",
-            });
-          }}
-        />
-        <button
-          style={{
-            backgroundColor: "transparent",
-            height: "30px",
-            width: "70px",
-            border: ".5px solid",
-            borderRadius: "3rem",
-            cursor: "pointer",
-            margin: "1.5rem",
-            fontSize: "12px",
-          }}
-          onClick={() => {
-            this.setState({
-              loginNav: true,
-              navRoute: "/login",
-            });
-          }}
-        >
-          Logout
-        </button>
-      </div>
-    );
-  }
+
   _navbar() {
     return (
       <div
@@ -168,7 +125,6 @@ class Reservation extends Component {
   }
 
   _schedule() {
-    const { screenWidth } = this.state;
     return (
       <div style={{ borderBottom: "1px solid" }}>
         <div style={{ marginTop: ".5rem" }}>
@@ -226,7 +182,7 @@ class Reservation extends Component {
         }}
       >
         <div style={{ maxWidth: "920px", width: "100%" }}>
-          {this._header()}
+          <Header />
           {this._navbar()}
           {this._schedule()}
           {this.state.loginNav && <Navigate to={this.state.navRoute} />}

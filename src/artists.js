@@ -9,152 +9,37 @@ import "./App.css";
 import { Link, Navigate } from "react-router-dom";
 import "leaflet/dist/leaflet.css";
 import { CButton } from "@coreui/react";
+import Header from "./header";
+import Navbar from "./navbar";
+import BottomNavbar from "./bottomNavbar";
+
 class Artists extends Component {
   state = {
     loginNav: false,
     navRoute: null,
     displayedArtists: 15,
+    screenWidth: window.innerWidth,
   };
-  _header() {
-    return (
-      <div
-        style={{
-          height: "80px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <img
-          src={logo}
-          style={{ height: "80px", width: "150px", cursor: "pointer" }}
-          alt="logo"
-          onClick={() => {
-            this.setState({
-              loginNav: true,
-              navRoute: "/",
-            });
-          }}
-        />
-        <button
-          style={{
-            backgroundColor: "transparent",
-            height: "30px",
-            width: "70px",
-            border: ".5px solid",
-            borderRadius: "3rem",
-            cursor: "pointer",
-            margin: "1.5rem",
-            fontSize: "12px",
-          }}
-          onClick={() => {
-            this.setState({
-              loginNav: true,
-              navRoute: "/login",
-            });
-          }}
-        >
-          Logout
-        </button>
-      </div>
-    );
-  }
-  _navbar() {
-    return (
-      <div
-        className="navbar"
-        style={{
-          borderBottom: "1px solid",
-          borderTop: "1px solid",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: "0",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            width: "30rem",
-            alignItems: "center",
-          }}
-        >
-          <div
-            style={{
-              cursor: "pointer",
-              marginRight: "40px",
-              fontWeight: "700",
-            }}
-            onClick={() => {
-              this.setState({
-                loginNav: true,
-                navRoute: "/prereservation",
-              });
-            }}
-          >
-            <span>RESERVATION</span>
-          </div>
-          <div
-            style={{
-              cursor: "pointer",
-              marginRight: "40px",
-              fontWeight: "700",
-            }}
-            onClick={() => {
-              this.setState({
-                loginNav: true,
-                navRoute: "/artists",
-              });
-            }}
-          >
-            <span>ARTISTS</span>
-          </div>
-          <div
-            style={{
-              cursor: "pointer",
-              marginRight: "40px",
-              fontWeight: "700",
-            }}
-            onClick={() => {
-              this.setState({
-                loginNav: true,
-                navRoute: "/info",
-              });
-            }}
-          >
-            <span>INFO</span>
-          </div>
-        </div>
-        <div
-          style={{
-            borderLeft: "1px solid",
-            display: "flex",
-            alignItems: "center",
-            cursor: "pointer",
-            paddingLeft: "2rem",
-            paddingRight: "2rem",
 
-            height: "40px",
-          }}
-          onClick={() => {
-            this.setState({
-              loginNav: true,
-              navRoute: "/logout",
-            });
-          }}
-        >
-          <img
-            src={userLogo}
-            alt="user"
-            style={{ height: "15px", width: "15px", paddingRight: ".25rem" }}
-          />
-          <span>Nurik</span>
-        </div>
-      </div>
-    );
+  componentDidUpdate() {
+    console.log(this.state.shownProject);
   }
+  componentDidMount() {
+    window.addEventListener("resize", this.handleResize);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.handleResize);
+  }
+
+  handleResize = () => {
+    this.setState({
+      screenWidth: window.innerWidth,
+    });
+  };
+
   _aboutComponent() {
-    const { displayedArtists } = this.state;
+    const { displayedArtists, screenWidth } = this.state;
     const bands = [
       {
         bandName: "Linkin Park",
@@ -461,7 +346,7 @@ class Artists extends Component {
       },
     ];
     return (
-      <div style={{}}>
+      <div>
         <div style={{ marginTop: ".5rem" }}>
           <span
             style={{ fontSize: "1.6rem", color: "#C20019", fontWeight: "700" }}
@@ -473,7 +358,8 @@ class Artists extends Component {
           style={{
             marginBottom: "1rem",
             display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
+            gridTemplateColumns:
+              screenWidth < 700 ? "repeat(2, 1fr)" : "repeat(4, 1fr)",
           }}
         >
           {bands.slice(0, displayedArtists).map((band, index) => (
@@ -523,7 +409,13 @@ class Artists extends Component {
             </div>
           ))}
         </div>
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginBottom: "2rem",
+          }}
+        >
           {displayedArtists < bands.length && (
             <CButton
               onClick={() => {
@@ -542,18 +434,20 @@ class Artists extends Component {
   }
 
   render() {
+    const { screenWidth } = this.state;
     return (
       <div
         className="App"
         style={{
-          padding: "1rem 3rem",
+          padding: screenWidth < 700 ? "10px" : "1rem 3rem",
           display: "flex",
           justifyContent: "center",
+          borderBottom: "1px solid",
         }}
       >
         <div style={{ maxWidth: "920px", width: "auto" }}>
-          {this._header()}
-          {this._navbar()}
+          <Header />
+          {screenWidth <= 700 ? <BottomNavbar /> : <Navbar />}
           {this._aboutComponent()}
           {this.state.loginNav && <Navigate to={this.state.navRoute} />}
         </div>

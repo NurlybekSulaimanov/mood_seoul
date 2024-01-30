@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import logo from "./photo/moodseoul.jpg";
-import userLogo from "./photo/person-grey.png";
 import mainPhoto from "./photo/mainPage.webp";
 import minilogo from "./photo/minilogo.jpg";
 import Calendar from "react-calendar";
@@ -16,9 +14,12 @@ import photo3 from "./photo/3.jpg";
 import photo4 from "./photo/4.jpg";
 import photo5 from "./photo/5.jpg";
 import photo6 from "./photo/6.jpg";
-// import photo7 from "./photo/7.jpg";
+import photo7 from "./photo/7.jpg";
 import "./App.css";
 import { Navigate } from "react-router-dom";
+import Header from "./header";
+import Navbar from "./navbar";
+import BottomNavbar from "./bottomNavbar";
 
 class Home extends Component {
   state = {
@@ -42,144 +43,7 @@ class Home extends Component {
       screenWidth: window.innerWidth,
     });
   };
-  _header() {
-    return (
-      <div
-        style={{
-          height: "80px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <img
-          src={logo}
-          style={{ height: "80px", width: "150px", cursor: "pointer" }}
-          alt="logo"
-          onClick={() => {
-            this.setState({
-              loginNav: true,
-              navRoute: "/",
-            });
-          }}
-        />
-        <button
-          style={{
-            backgroundColor: "transparent",
-            height: "30px",
-            width: "70px",
-            border: ".5px solid",
-            borderRadius: "3rem",
-            cursor: "pointer",
-            margin: "1.5rem",
-            fontSize: "12px",
-          }}
-          onClick={() => {
-            this.setState({
-              loginNav: true,
-              navRoute: "/login",
-            });
-          }}
-        >
-          Logout
-        </button>
-      </div>
-    );
-  }
-  _navbar() {
-    return (
-      <div
-        className="navbar"
-        style={{
-          borderBottom: "1px solid",
-          borderTop: "1px solid",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: "0",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            width: "30rem",
-            alignItems: "center",
-          }}
-        >
-          <div
-            style={{
-              cursor: "pointer",
-              marginRight: "40px",
-              fontWeight: "700",
-            }}
-            onClick={() => {
-              this.setState({
-                loginNav: true,
-                navRoute: "/prereservation",
-              });
-            }}
-          >
-            <span>RESERVATION</span>
-          </div>
-          <div
-            style={{
-              cursor: "pointer",
-              marginRight: "40px",
-              fontWeight: "700",
-            }}
-            onClick={() => {
-              this.setState({
-                loginNav: true,
-                navRoute: "/artists",
-              });
-            }}
-          >
-            <span>ARTISTS</span>
-          </div>
-          <div
-            style={{
-              cursor: "pointer",
-              marginRight: "40px",
-              fontWeight: "700",
-            }}
-            onClick={() => {
-              this.setState({
-                loginNav: true,
-                navRoute: "/info",
-              });
-            }}
-          >
-            <span>INFO</span>
-          </div>
-        </div>
-        <div
-          style={{
-            borderLeft: "1px solid",
-            display: "flex",
-            alignItems: "center",
-            cursor: "pointer",
-            paddingLeft: "2rem",
-            paddingRight: "2rem",
 
-            height: "40px",
-          }}
-          onClick={() => {
-            this.setState({
-              loginNav: true,
-              navRoute: "/logout",
-            });
-          }}
-        >
-          <img
-            src={userLogo}
-            alt="user"
-            style={{ height: "15px", width: "15px", paddingRight: ".25rem" }}
-          />
-          <span>Nurik</span>
-        </div>
-      </div>
-    );
-  }
   _aboutComponent() {
     const { screenWidth } = this.state;
     return (
@@ -216,28 +80,54 @@ class Home extends Component {
           </div>
         </div>
         <div style={{ display: "flex", borderBottom: "1px solid" }}>
-          <span
-            style={{
-              fontSize: "27px",
-              display: "flex",
-              fontWeight: "bold",
-              marginTop: "-.75rem",
-              letterSpacing: "-2px",
-            }}
-          >
-            기분을 높여주세요! 감각을 돋우세요 - MOOD SEOUL에 오신 것을
-            환영합니다!
-            <img
-              src={minilogo}
-              alt="miniLogo"
+          {screenWidth <= 700 && (
+            <span
               style={{
-                height: "35px",
-                width: "35px",
-                borderRadius: "50%",
-                marginLeft: ".5rem",
+                fontSize: "20px",
+                display: "flex",
+                fontWeight: "bold",
+                marginTop: "-.75rem",
+                letterSpacing: "-2px",
               }}
-            />
-          </span>
+            >
+              MOOD SEOUL에 오신 것을 환영합니다!
+              <img
+                src={minilogo}
+                alt="miniLogo"
+                style={{
+                  height: "30px",
+                  width: "30px",
+                  borderRadius: "50%",
+                  marginLeft: ".5rem",
+                  marginBottom: ".3rem",
+                }}
+              />
+            </span>
+          )}
+          {screenWidth >= 700 && (
+            <span
+              style={{
+                fontSize: "27px",
+                display: "flex",
+                fontWeight: "bold",
+                marginTop: "-.75rem",
+                letterSpacing: "-2px",
+              }}
+            >
+              기분을 높여주세요! 감각을 돋우세요 - MOOD SEOUL에 오신 것을
+              환영합니다!
+              <img
+                src={minilogo}
+                alt="miniLogo"
+                style={{
+                  height: "35px",
+                  width: "35px",
+                  borderRadius: "50%",
+                  marginLeft: ".5rem",
+                }}
+              />
+            </span>
+          )}
         </div>
       </div>
     );
@@ -319,6 +209,7 @@ class Home extends Component {
     );
   }
   _artists() {
+    const { screenWidth } = this.state;
     const bands = [
       {
         bandName: "Linkin Park",
@@ -381,52 +272,31 @@ class Home extends Component {
             아티스트
           </span>
         </div>
-        <div style={{ display: "flex", position: "relative" }}>
-          <div style={{ paddingRight: "200px", display: "flex" }}>
-            {bands.map((band, index) => (
-              <div
-                key={index}
-                style={{
-                  marginBottom: ".5rem",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  width: "25%",
-                  fontSize: "1.15rem",
-                }}
-              >
-                <img
-                  src={band.image}
-                  alt={band.bandName}
-                  style={{
-                    width: "100%",
-                    height: "170px",
-                    objectFit: "cover",
-                  }}
-                />
-                <p style={{ marginBottom: ".5px" }}>{band.genre}</p>
-                <h3>{band.bandName}</h3>
-                <p
-                  style={{
-                    textAlign: "center",
-                    margin: "0 .5rem",
-                    fontSize: "11px",
-                  }}
-                >
-                  {band.artists.join(", ")}
-                </p>
-              </div>
-            ))}
-          </div>
+        <div
+          style={
+            screenWidth < 700
+              ? { display: "flex", flexDirection: "column" }
+              : { display: "flex", position: "relative" }
+          }
+        >
           <div
-            style={{
-              position: "absolute",
-              top: "0",
-              right: "0",
-              width: "200px",
-              display: "flex",
-              flexDirection: "column",
-            }}
+            style={
+              screenWidth < 700
+                ? {
+                    top: "0",
+                    left: "0",
+                    display: "flex",
+                    flexDirection: "column",
+                  }
+                : {
+                    position: "absolute",
+                    top: "0",
+                    right: "0",
+                    width: "200px",
+                    display: "flex",
+                    flexDirection: "column",
+                  }
+            }
           >
             <div
               style={{
@@ -482,6 +352,48 @@ class Home extends Component {
               MORE
             </div>
           </div>
+          <div
+            style={
+              screenWidth < 700
+                ? { display: "grid", gridTemplateColumns: "repeat(2, 1fr)" }
+                : { paddingRight: "200px", display: "flex" }
+            }
+          >
+            {bands.map((band, index) => (
+              <div
+                key={index}
+                style={{
+                  marginBottom: ".5rem",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  width: screenWidth < 700 ? "100%" : "25%",
+                  fontSize: "1.15rem",
+                }}
+              >
+                <img
+                  src={band.image}
+                  alt={band.bandName}
+                  style={{
+                    width: "100%",
+                    height: "170px",
+                    objectFit: "cover",
+                  }}
+                />
+                <p style={{ marginBottom: ".5px" }}>{band.genre}</p>
+                <h3>{band.bandName}</h3>
+                <p
+                  style={{
+                    textAlign: "center",
+                    margin: "0 .5rem",
+                    fontSize: "11px",
+                  }}
+                >
+                  {band.artists.join(", ")}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -505,6 +417,7 @@ class Home extends Component {
       { id: 4, src: photo4, alt: "Photo 4" },
       { id: 5, src: photo5, alt: "Photo 5" },
       { id: 6, src: photo6, alt: "Photo 6" },
+      { id: 7, src: photo7, alt: "Photo 7" },
     ];
     return (
       <div
@@ -548,19 +461,20 @@ class Home extends Component {
     );
   }
   render() {
+    const { screenWidth } = this.state;
     return (
       <div
         className="App"
         style={{
-          padding: "1rem 3rem",
+          padding: screenWidth < 700 ? "5px" : "1rem 3rem",
           display: "flex",
           justifyContent: "center",
           position: "relative",
         }}
       >
         <div style={{ maxWidth: "920px", width: "100%" }}>
-          {this._header()}
-          {this._navbar()}
+          <Header />
+          {screenWidth <= 700 ? <BottomNavbar /> : <Navbar />}
           {this._aboutComponent()}
           {this._schedule()}
           {this._artists()}

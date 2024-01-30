@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import logo from "./photo/moodseoul.jpg";
-import userLogo from "./photo/person-grey.png";
 import mainPhoto from "./photo/infoPages.jpg";
 import minilogo from "./photo/minilogoInfo.jpg";
 import "./App.css";
@@ -8,153 +6,38 @@ import { Navigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Icon } from "leaflet";
+import Header from "./header";
+import Navbar from "./navbar";
+import BottomNavbar from "./bottomNavbar";
 
 class Info extends Component {
   state = {
     loginNav: false,
     navRoute: null,
+    screenWidth: window.innerWidth,
   };
-  _header() {
-    return (
-      <div
-        style={{
-          height: "80px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <img
-          src={logo}
-          style={{ height: "80px", width: "150px", cursor: "pointer" }}
-          alt="logo"
-          onClick={() => {
-            this.setState({
-              loginNav: true,
-              navRoute: "/",
-            });
-          }}
-        />
-        <button
-          style={{
-            backgroundColor: "transparent",
-            height: "30px",
-            width: "70px",
-            border: ".5px solid",
-            borderRadius: "3rem",
-            cursor: "pointer",
-            margin: "1.5rem",
-            fontSize: "12px",
-          }}
-          onClick={() => {
-            this.setState({
-              loginNav: true,
-              navRoute: "/login",
-            });
-          }}
-        >
-          Logout
-        </button>
-      </div>
-    );
-  }
-  _navbar() {
-    return (
-      <div
-        className="navbar"
-        style={{
-          borderBottom: "1px solid",
-          borderTop: "1px solid",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: "0",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            width: "30rem",
-            alignItems: "center",
-          }}
-        >
-          <div
-            style={{
-              cursor: "pointer",
-              marginRight: "40px",
-              fontWeight: "700",
-            }}
-            onClick={() => {
-              this.setState({
-                loginNav: true,
-                navRoute: "/prereservation",
-              });
-            }}
-          >
-            <span>RESERVATION</span>
-          </div>
-          <div
-            style={{
-              cursor: "pointer",
-              marginRight: "40px",
-              fontWeight: "700",
-            }}
-            onClick={() => {
-              this.setState({
-                loginNav: true,
-                navRoute: "/artists",
-              });
-            }}
-          >
-            <span>ARTISTS</span>
-          </div>
-          <div
-            style={{
-              cursor: "pointer",
-              marginRight: "40px",
-              fontWeight: "700",
-            }}
-            onClick={() => {
-              this.setState({
-                loginNav: true,
-                navRoute: "/info",
-              });
-            }}
-          >
-            <span>INFO</span>
-          </div>
-        </div>
-        <div
-          style={{
-            borderLeft: "1px solid",
-            display: "flex",
-            alignItems: "center",
-            cursor: "pointer",
-            paddingLeft: "2rem",
-            paddingRight: "2rem",
 
-            height: "40px",
-          }}
-          onClick={() => {
-            this.setState({
-              loginNav: true,
-              navRoute: "/logout",
-            });
-          }}
-        >
-          <img
-            src={userLogo}
-            alt="user"
-            style={{ height: "15px", width: "15px", paddingRight: ".25rem" }}
-          />
-          <span>Nurik</span>
-        </div>
-      </div>
-    );
+  componentDidUpdate() {
+    console.log(this.state.shownProject);
   }
+  componentDidMount() {
+    window.addEventListener("resize", this.handleResize);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.handleResize);
+  }
+
+  handleResize = () => {
+    this.setState({
+      screenWidth: window.innerWidth,
+    });
+  };
+
   _aboutComponent() {
+    const { screenWidth } = this.state;
     return (
-      <div style={{}}>
+      <div>
         <div style={{ marginTop: ".5rem" }}>
           <span
             style={{ fontSize: "1.6rem", color: "#C20019", fontWeight: "700" }}
@@ -173,7 +56,10 @@ class Info extends Component {
           <img
             src={mainPhoto}
             alt="main"
-            style={{ width: "100%", height: "350px" }}
+            style={{
+              width: "100%",
+              height: screenWidth < 700 ? "125px" : "350px",
+            }}
           />
         </div>
         <div style={{ display: "flex", borderBottom: "1px solid" }}>
@@ -186,25 +72,31 @@ class Info extends Component {
               fontWeight: "700",
             }}
           >
-            MOOD SEOUL은 대하여
+            MOOD SEOUL에 대하여
           </span>
         </div>
         <div style={{ display: "flex", alignItems: "center", height: "300px" }}>
-          <div
-            style={{ borderRight: "1px solid", width: "120%", height: "100%" }}
-          >
-            <img
-              src={minilogo}
-              alt="minilogo"
-              style={{ width: "100%", height: "100%" }}
-            />
-          </div>
+          {screenWidth > 700 && (
+            <div
+              style={{
+                borderRight: "1px solid",
+                width: "120%",
+                height: "100%",
+              }}
+            >
+              <img
+                src={minilogo}
+                alt="minilogo"
+                style={{ width: "100%", height: "100%" }}
+              />
+            </div>
+          )}
           <div
             style={{
-              textAlign: "center",
+              textAlign: screenWidth < 700 ? "start" : "center",
               fontSize: "1rem",
-              padding: "1rem",
-              lineHeight: "2rem",
+              padding: screenWidth < 700 ? "5px" : "1rem",
+              lineHeight: screenWidth < 700 ? "1.4rem" : "2rem",
               display: "flex",
               flexDirection: "column",
             }}
@@ -233,6 +125,7 @@ class Info extends Component {
   }
 
   _additionalInfo() {
+    const { screenWidth } = this.state;
     return (
       <div style={{ borderBottom: "1px solid" }}>
         <div style={{ display: "flex", borderBottom: "1px solid" }}>
@@ -277,7 +170,7 @@ class Info extends Component {
               marginTop: ".5rem",
             }}
           >
-            주차안내
+            주차 안내 주소
           </span>
         </div>
         <div style={{ margin: "1rem 1rem 0 2rem" }}>
@@ -289,9 +182,9 @@ class Info extends Component {
             <div style={{ display: "flex", lineHeight: "2rem" }}>
               <ul style={{ marginRight: "6rem" }}>
                 <li>
-                  발렛주차 : 서울 용산구 이태원로27나길 40 IBK기업은행 이태원
+                  반포 한강공원 반포2주차장 (서울 서초구 신반포로11길 40
+                  한강공원 반포안내센터)
                 </li>
-                <li>한남동 공영주차장 : 서울 용산구 이태원로 224-19</li>
               </ul>
             </div>
           </div>
@@ -322,19 +215,34 @@ class Info extends Component {
               fontSize: "1rem",
             }}
           >
-            <div style={{ display: "flex", lineHeight: "2rem" }}>
-              <ul style={{ marginRight: "6rem" }}>
-                <li>영업일: 화요일 - 일요일</li>
-                <li>
-                  점심: 11:30am ~ 15:00pm <br />
-                  (휴식 시간: 15:00pm ~ 17:00pm)
-                </li>
-              </ul>
-              <ul>
-                <li>저녁: 17:00pm ~ 22:00pm</li>
-                <li>문의: 02-532-5272</li>
-              </ul>
-            </div>
+            {screenWidth < 700 && (
+              <div style={{ display: "flex", lineHeight: "2rem" }}>
+                <ul>
+                  <li>영업일: 화요일 - 일요일</li>
+                  <li>
+                    점심: 11:30am ~ 15:00pm <br />
+                    (휴식 시간: 15:00pm ~ 17:00pm)
+                  </li>
+                  <li>저녁: 17:00pm ~ 22:00pm</li>
+                  <li>문의: 02-532-5272</li>
+                </ul>
+              </div>
+            )}
+            {screenWidth > 700 && (
+              <div style={{ display: "flex", lineHeight: "2rem" }}>
+                <ul style={{ marginRight: "6rem" }}>
+                  <li>영업일: 화요일 - 일요일</li>
+                  <li>
+                    점심: 11:30am ~ 15:00pm <br />
+                    (휴식 시간: 15:00pm ~ 17:00pm)
+                  </li>
+                </ul>
+                <ul>
+                  <li>저녁: 17:00pm ~ 22:00pm</li>
+                  <li>문의: 02-532-5272</li>
+                </ul>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -343,6 +251,7 @@ class Info extends Component {
 
   _mapComponent() {
     const mapCenter = [37.512657, 126.994797];
+    const parkingLot = [37.510057, 126.996007];
     const mapZoom = 15;
     const customIcon = new Icon({
       iconUrl:
@@ -362,29 +271,33 @@ class Info extends Component {
         }}
       >
         <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://mt0.google.com/vt/lyrs=m&hl=kr&x={x}&y={y}&z={z}"
+          attribution='&copy; <a target="_blank" href="https://maps.google.com/maps?ll=36.1358642,128.0785804&amp;z=13&amp;t=m&amp;hl=ko-KR&amp;gl=US&amp;mapclient=apiv3" title="Google 지도에서 이 지역을 보려면 클릭하세요." ><img alt="" src="https://maps.gstatic.com/mapfiles/api-3/images/google4.png" draggable="false"></a>'
         />
         <Marker position={mapCenter} icon={customIcon}>
           <Popup>MOOD SEOUL</Popup>
+        </Marker>
+        <Marker position={parkingLot} icon={customIcon}>
+          <Popup>주차</Popup>
         </Marker>
       </MapContainer>
     );
   }
 
   render() {
+    const { screenWidth } = this.state;
     return (
       <div
         className="App"
         style={{
-          padding: "1rem 3rem",
+          padding: screenWidth < 700 ? "10px" : "1rem 3rem",
           display: "flex",
           justifyContent: "center",
         }}
       >
         <div style={{ maxWidth: "920px", width: "auto" }}>
-          {this._header()}
-          {this._navbar()}
+          <Header />
+          {screenWidth <= 700 ? <BottomNavbar /> : <Navbar />}
           {this._aboutComponent()}
           {this._mapComponent()}
           {this._additionalInfo()}
