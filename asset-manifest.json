@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/mood_seoul/static/css/main.ab3d14a8.css",
-    "main.js": "/mood_seoul/static/js/main.620ddf05.js",
+    "main.css": "/mood_seoul/static/css/main.cf53f3b7.css",
+    "main.js": "/mood_seoul/static/js/main.87e7f12a.js",
     "static/media/linking-park.jpg": "/mood_seoul/static/media/linking-park.37f86ecb3eabc17dca21.jpg",
     "static/media/1.jpg": "/mood_seoul/static/media/1.8c867e5c4e3854e28752.jpg",
     "static/media/2.jpg": "/mood_seoul/static/media/2.8927284c2686778f8379.jpg",
@@ -23,11 +23,11 @@
     "static/media/insta.png": "/mood_seoul/static/media/insta.9531a7a685f60c10f929.png",
     "static/media/youtube.png": "/mood_seoul/static/media/youtube.6751813e0bd17927950c.png",
     "index.html": "/mood_seoul/index.html",
-    "main.ab3d14a8.css.map": "/mood_seoul/static/css/main.ab3d14a8.css.map",
-    "main.620ddf05.js.map": "/mood_seoul/static/js/main.620ddf05.js.map"
+    "main.cf53f3b7.css.map": "/mood_seoul/static/css/main.cf53f3b7.css.map",
+    "main.87e7f12a.js.map": "/mood_seoul/static/js/main.87e7f12a.js.map"
   },
   "entrypoints": [
-    "static/css/main.ab3d14a8.css",
-    "static/js/main.620ddf05.js"
+    "static/css/main.cf53f3b7.css",
+    "static/js/main.87e7f12a.js"
   ]
 }
