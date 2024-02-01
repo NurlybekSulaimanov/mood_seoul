@@ -2,43 +2,17 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
-import Cookies from "js-cookie";
-import logo from "./photo/moodseoul.jpg";
+import logo from "../photo/moodseoul.jpg";
 import { CRow, CFormLabel, CCol, CFormInput, CButton } from "@coreui/react";
 import "@coreui/coreui/dist/css/coreui.min.css";
+import { login } from "../redux/actions/authActions";
+import { useDispatch } from "react-redux";
 
 function Login() {
   const [user_nm, setUsername] = useState("");
   const [passwd, setPassword] = useState("");
   const navigate = useNavigate(); // useNavigate replaces useHistory
-
-  const handleSignIn = async () => {
-    try {
-      // Send a request to your backend with entered credentials
-      const response = await fetch("http://localhost:8081/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ user_nm, passwd }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-
-        // Store the token in cookies
-        Cookies.set("token", data.token);
-
-        // Now you can use the token as needed
-        console.log("LOGIN SUCCESSFUL! Token:", jwtDecode(data.token));
-        navigate("/");
-      } else {
-        console.log("Login Failed");
-      }
-    } catch (error) {
-      console.error("Error during login:", error.message);
-    }
-  };
+  const dispatch = useDispatch();
 
   const handleGoogleLogin = (credentialResponse) => {
     const credentialResponseDecoded = jwtDecode(credentialResponse.credential);
@@ -48,9 +22,20 @@ function Login() {
     });
   };
 
-  const handleSignUp = () => {
-    // Redirect to the /register page
-    navigate("/register");
+  // const handleSignUp = () => {
+  //   // Redirect to the /register page
+  //   navigate("/register");
+  // };
+
+  const handleSignIn = async () => {
+    try {
+      await login({ user_nm, passwd })(dispatch); // assuming `dispatch` is available in your component
+      // You might want to add additional logic after a successful login
+      navigate("/");
+    } catch (error) {
+      // Handle login failure (display error message, etc.)
+      console.error(error.message);
+    }
   };
 
   return (

@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import Calendar from "react-calendar";
-import band from "./photo/G-Idle.jpg";
-import "./App.css";
+import band from "../photo/G-Idle.jpg";
+import "../App.css";
 import { Navigate } from "react-router-dom";
 import { CButton } from "@coreui/react";
-import Header from "./header";
-import Navbar from "./navbar";
-import BottomNavbar from "./bottomNavbar";
+import Header from "../components/header";
+import Navbar from "../components/navbar";
+import BottomNavbar from "../components/bottomNavbar";
 
 class Prereservation extends Component {
   state = {
@@ -14,9 +14,6 @@ class Prereservation extends Component {
     navRoute: null,
     screenWidth: window.innerWidth,
   };
-  componentDidUpdate() {
-    console.log(this.state.shownProject);
-  }
   componentDidMount() {
     window.addEventListener("resize", this.handleResize);
   }

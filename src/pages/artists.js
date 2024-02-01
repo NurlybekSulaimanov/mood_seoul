@@ -1,17 +1,18 @@
 import React, { Component } from "react";
-import logo from "./photo/moodseoul.jpg";
-import userLogo from "./photo/person-grey.png";
-import linking from "./photo/linking-park.jpg";
-import beatles from "./photo/beatles.jpg";
-import coldplay from "./photo/coldplay.jpg";
-import queen from "./photo/queen.jpg";
-import "./App.css";
+import { connect } from "react-redux";
+import logo from "../photo/moodseoul.jpg";
+import linking from "../photo/linking-park.jpg";
+import beatles from "../photo/beatles.jpg";
+import coldplay from "../photo/coldplay.jpg";
+import queen from "../photo/queen.jpg";
+import "../App.css";
 import { Link, Navigate } from "react-router-dom";
 import "leaflet/dist/leaflet.css";
 import { CButton } from "@coreui/react";
-import Header from "./header";
-import Navbar from "./navbar";
-import BottomNavbar from "./bottomNavbar";
+import Header from "../components/header";
+import Navbar from "../components/navbar";
+import BottomNavbar from "../components/bottomNavbar";
+import { fetchArtists } from "../redux/actions/artistActions";
 
 class Artists extends Component {
   state = {
@@ -21,11 +22,9 @@ class Artists extends Component {
     screenWidth: window.innerWidth,
   };
 
-  componentDidUpdate() {
-    console.log(this.state.shownProject);
-  }
   componentDidMount() {
     window.addEventListener("resize", this.handleResize);
+    this.props.fetchArtists();
   }
 
   componentWillUnmount() {
@@ -435,6 +434,7 @@ class Artists extends Component {
 
   render() {
     const { screenWidth } = this.state;
+    console.log(this.props);
     return (
       <div
         className="App"
@@ -455,4 +455,12 @@ class Artists extends Component {
     );
   }
 }
-export default Artists;
+
+const mapStateToProps = (state) => ({
+  bands: state.artists.bands,
+  artists: state.artists.artists,
+  loading: state.artists.loading,
+  error: state.artists.error,
+});
+
+export default connect(mapStateToProps, { fetchArtists })(Artists);

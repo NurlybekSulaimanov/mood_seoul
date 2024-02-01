@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import userLogo from "./photo/person-grey.png";
-import map from "./photo/table_map.jpg";
-import "./App.css";
+import userLogo from "../photo/person-grey.png";
+import map from "../photo/table_map.jpg";
+import "../App.css";
 import { Navigate } from "react-router-dom";
 import { CButton } from "@coreui/react";
-import Header from "./header";
+import Header from "../components/header";
 
 class Reservation extends Component {
   state = {
@@ -12,9 +12,7 @@ class Reservation extends Component {
     navRoute: null,
     screenWidth: window.innerWidth,
   };
-  componentDidUpdate() {
-    console.log(this.state.shownProject);
-  }
+
   componentDidMount() {
     window.addEventListener("resize", this.handleResize);
   }

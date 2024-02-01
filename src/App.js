@@ -1,17 +1,17 @@
 // Inside your App component (App.js)
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import Login from "./login";
-import Home from "./home";
-import Info from "./info";
-import Register from "./register";
-import SNSRegister from "./snsregister";
-import Artists from "./artists";
-import Prereservation from "./prereservation";
-import Reservation from "./reservation";
-import Band from "./band";
+import Login from "./pages/login";
+import Home from "./pages/home";
+import Info from "./pages/info";
+import Register from "./pages/register";
+import SNSRegister from "./pages/snsregister";
+import Artists from "./pages/artists";
+import Prereservation from "./pages/prereservation";
+import Reservation from "./pages/reservation";
+import Band from "./pages/band";
 // import { RequireAuth } from "react-auth-kit";
-import Footer from "./footer";
+import Footer from "./components/footer";
 
 function App() {
   return (

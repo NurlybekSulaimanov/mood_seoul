@@ -1,37 +1,146 @@
 import React, { Component } from "react";
-import mainPhoto from "./photo/mainPage.webp";
-import minilogo from "./photo/minilogo.jpg";
+import mainPhoto from "../photo/mainPage.webp";
+import minilogo from "../photo/minilogo.jpg";
 import Calendar from "react-calendar";
-import band from "./photo/G-Idle.jpg";
-import linking from "./photo/linking-park.jpg";
-import beatles from "./photo/beatles.jpg";
-import coldplay from "./photo/coldplay.jpg";
-import queen from "./photo/queen.jpg";
-import arrow from "./photo/rightArrow.png";
-import photo1 from "./photo/1.jpg";
-import photo2 from "./photo/2.jpg";
-import photo3 from "./photo/3.jpg";
-import photo4 from "./photo/4.jpg";
-import photo5 from "./photo/5.jpg";
-import photo6 from "./photo/6.jpg";
-import photo7 from "./photo/7.jpg";
-import "./App.css";
+import band from "../photo/G-Idle.jpg";
+import linking from "../photo/linking-park.jpg";
+import beatles from "../photo/beatles.jpg";
+import coldplay from "../photo/coldplay.jpg";
+import queen from "../photo/queen.jpg";
+import arrow from "../photo/rightArrow.png";
+import photo1 from "../photo/1.jpg";
+import photo2 from "../photo/2.jpg";
+import photo3 from "../photo/3.jpg";
+import photo4 from "../photo/4.jpg";
+import photo5 from "../photo/5.jpg";
+import photo6 from "../photo/6.jpg";
+import photo7 from "../photo/7.jpg";
+import logo from "../photo/moodseoul.jpg";
+import "../App.css";
 import { Navigate } from "react-router-dom";
-import Header from "./header";
-import Navbar from "./navbar";
-import BottomNavbar from "./bottomNavbar";
+import Header from "../components/header";
+import Navbar from "../components/navbar";
+import BottomNavbar from "../components/bottomNavbar";
+import { format, addDays } from "date-fns";
+import CIcon from "@coreui/icons-react";
+import * as icon from "@coreui/icons";
+import { isEqual } from "lodash";
 
 class Home extends Component {
   state = {
     loginNav: false,
     navRoute: null,
     screenWidth: window.innerWidth,
+    scheduleDate: new Date(),
+    perf: [],
+    bands: [
+      {
+        bandName: "G-Idle",
+        image: band,
+        performanceDate: new Date(),
+        time: "20:30 - 22:00",
+      },
+      {
+        bandName: "Linkin Park",
+        image: linking,
+        performanceDate: addDays(new Date(), 1),
+        time: "20:30 - 22:00",
+      },
+      {
+        bandName: "The Beatles",
+        image: beatles,
+        performanceDate: addDays(new Date(), 2),
+        time: "20:30 - 22:00",
+      },
+      {
+        bandName: "Coldplay",
+        image: coldplay,
+        performanceDate: addDays(new Date(), 3),
+        time: "20:30 - 22:00",
+      },
+      {
+        bandName: "Queen",
+        image: queen,
+        performanceDate: addDays(new Date(), 4),
+        time: "20:30 - 22:00",
+      },
+      {
+        bandName: "Led Zeppelin",
+        image: linking,
+        performanceDate: addDays(new Date(), 5),
+        time: "20:30 - 22:00",
+      },
+      {
+        bandName: "Pink Floyd",
+        image: beatles,
+        performanceDate: addDays(new Date(), 6),
+        time: "20:30 - 22:00",
+      },
+      {
+        bandName: "Metallica",
+        image: coldplay,
+        performanceDate: addDays(new Date(), 7),
+        time: "20:30 - 22:00",
+      },
+      {
+        bandName: "Radiohead",
+        image: queen,
+        performanceDate: addDays(new Date(), 8),
+        time: "20:30 - 22:00",
+      },
+      {
+        bandName: "U2",
+        image: logo,
+        performanceDate: addDays(new Date(), 9),
+        time: "20:30 - 22:00",
+      },
+      {
+        bandName: "Nirvana",
+        image: logo,
+        performanceDate: addDays(new Date(), 10),
+        time: "20:30 - 22:00",
+      },
+    ],
+    havePerfToday: false,
   };
-  componentDidUpdate() {
-    console.log(this.state.shownProject);
+
+  componentDidUpdate(prevProps, prevState) {
+    const { bands, scheduleDate } = this.state;
+
+    // Find the band matching the current scheduleDate
+    const matchingBand = bands.find(
+      (band) =>
+        format(scheduleDate, "yyyy-MMM-dd") ===
+        format(band.performanceDate, "yyyy-MMM-dd")
+    );
+
+    // Check if scheduleDate or matchingBand have changed
+    if (
+      scheduleDate !== prevState.scheduleDate ||
+      !isEqual(matchingBand, prevState.perf)
+    ) {
+      this.setState({
+        perf: matchingBand,
+        havePerfToday: matchingBand !== undefined,
+      });
+    }
   }
+
   componentDidMount() {
+    const { bands, scheduleDate, perf } = this.state;
     window.addEventListener("resize", this.handleResize);
+
+    const matchingBand = bands.find(
+      (band) =>
+        format(scheduleDate, "yyyy-MMM-dd") ===
+        format(band.performanceDate, "yyyy-MMM-dd")
+    );
+    if (matchingBand && matchingBand !== perf) {
+      this.setState({
+        perf: matchingBand,
+        havePerfToday: matchingBand !== undefined,
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -133,7 +242,8 @@ class Home extends Component {
     );
   }
   _schedule() {
-    const { screenWidth } = this.state;
+    const { screenWidth, scheduleDate, perf, havePerfToday } = this.state;
+
     return (
       <div style={{ borderBottom: "1px solid" }}>
         <div style={{ marginTop: ".5rem" }}>
@@ -156,53 +266,86 @@ class Home extends Component {
               borderRight: ".5px solid",
             }}
           >
-            <Calendar locale="en-EN" />
+            <Calendar
+              locale="en-EN"
+              value={scheduleDate}
+              onChange={(e) => this.setState({ scheduleDate: e })}
+            />
           </div>
           <div
             style={{
               width: screenWidth < 600 ? "100%" : "50%",
               display: "flex",
               flexDirection: "column",
+              height: "435px",
             }}
           >
             <div
               style={{
-                height: "60px",
-                overflow: "hidden",
-                borderRight: "2px solid transparent",
-                width: "100%",
-              }}
-            >
-              <Calendar locale="en-EN" />
-            </div>
-            <div
-              style={{
                 display: "flex",
-                flexDirection: "column",
                 alignItems: "center",
-                justifyContent: "center",
+                fontSize: "1rem",
+                height: "45px",
+                borderTop: "1px solid",
+                borderBottom: "1px solid",
+                justifyContent: "space-around",
+                userSelect: "none",
               }}
             >
-              <span
+              <CIcon
+                icon={icon.cilChevronLeft}
+                size="sm"
+                onClick={() => {
+                  this.setState({ scheduleDate: addDays(scheduleDate, -1) });
+                }}
+                style={{ cursor: "pointer" }}
+              />
+              <span>{format(scheduleDate, "yyyy-MMM-dd")}</span>
+              <CIcon
+                icon={icon.cilChevronRight}
+                size="sm"
+                onClick={() => {
+                  this.setState({ scheduleDate: addDays(scheduleDate, 1) });
+                }}
+                style={{ cursor: "pointer" }}
+              />
+            </div>
+            {havePerfToday && (
+              <div
+                key={perf.bandName}
                 style={{
-                  fontSize: "2rem",
-                  marginBottom: ".5rem",
-                  marginTop: ".5rem",
+                  display:
+                    format(scheduleDate, "yyyy-MMM-dd") ===
+                    format(perf.performanceDate, "yyyy-MMM-dd")
+                      ? "flex"
+                      : "none",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "390px",
                 }}
               >
-                G-Idle
-              </span>
-              <img
-                src={band}
-                alt="band"
-                style={{
-                  height: "65%",
-                  width: "85%",
-                  marginBottom: ".5rem",
-                }}
-              />
-              <span style={{ fontSize: "1.5rem" }}>20:00 - 21:30</span>
-            </div>
+                <span
+                  style={{
+                    fontSize: "2rem",
+                    marginBottom: ".5rem",
+                    marginTop: ".5rem",
+                  }}
+                >
+                  {perf.bandName}
+                </span>
+                <img
+                  src={perf.image}
+                  alt="band"
+                  style={{
+                    height: "65%",
+                    width: "85%",
+                    marginBottom: ".5rem",
+                  }}
+                />
+                <span style={{ fontSize: "1.5rem" }}>{perf.time}</span>
+              </div>
+            )}
           </div>
         </div>
       </div>

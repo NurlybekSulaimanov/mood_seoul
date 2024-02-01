@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import logo from "./photo/moodseoul.jpg";
-import insta from "./photo/insta.png";
-import facebook from "./photo/facebook.png";
-import youtube from "./photo/youtube.png";
+import logo from "../photo/moodseoul.jpg";
+import insta from "../photo/insta.png";
+import facebook from "../photo/facebook.png";
+import youtube from "../photo/youtube.png";
 
 const Footer = () => {
   const redirectToWebsite = (website) => {
@@ -49,6 +49,7 @@ const Footer = () => {
             height: "100px",
             display: "flex",
             alignItems: "center",
+            marginTop: "-5px",
           }}
         >
           {screenWidth > 700 && (
@@ -105,7 +106,6 @@ const Footer = () => {
           style={{
             display: "flex",
             flexDirection: "column",
-            justifyContent: "space-evenly",
           }}
         >
           <div
@@ -114,6 +114,7 @@ const Footer = () => {
               display: "flex",
               alignItems: screenWidth < 700 ? "flex-end" : "flex-start",
               flexDirection: screenWidth < 700 ? "column" : "row",
+              marginBottom: "1rem",
             }}
           >
             <span

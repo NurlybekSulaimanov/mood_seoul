@@ -1,13 +1,13 @@
 import React, { Component } from "react";
-import userLogo from "./photo/person-grey.png";
-import mainPhoto from "./photo/infoPages.jpg";
-import minilogo from "./photo/minilogoInfo.jpg";
-import "./App.css";
+import userLogo from "../photo/person-grey.png";
+import mainPhoto from "../photo/infoPages.jpg";
+import minilogo from "../photo/minilogoInfo.jpg";
+import "../App.css";
 import { Navigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Icon } from "leaflet";
-import Header from "./header";
+import Header from "../components/header";
 
 class Band extends Component {
   state = {

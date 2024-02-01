@@ -1,14 +1,14 @@
 import React, { Component } from "react";
-import mainPhoto from "./photo/infoPages.jpg";
-import minilogo from "./photo/minilogoInfo.jpg";
-import "./App.css";
+import mainPhoto from "../photo/infoPages.jpg";
+import minilogo from "../photo/minilogoInfo.jpg";
+import "../App.css";
 import { Navigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Icon } from "leaflet";
-import Header from "./header";
-import Navbar from "./navbar";
-import BottomNavbar from "./bottomNavbar";
+import Header from "../components/header";
+import Navbar from "../components/navbar";
+import BottomNavbar from "../components/bottomNavbar";
 
 class Info extends Component {
   state = {
@@ -17,9 +17,6 @@ class Info extends Component {
     screenWidth: window.innerWidth,
   };
 
-  componentDidUpdate() {
-    console.log(this.state.shownProject);
-  }
   componentDidMount() {
     window.addEventListener("resize", this.handleResize);
   }

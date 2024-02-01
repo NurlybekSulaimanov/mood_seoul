@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "./photo/moodseoul.jpg";
+import logo from "../photo/moodseoul.jpg";
 
 const Header = () => {
 

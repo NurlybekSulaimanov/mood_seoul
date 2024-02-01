@@ -1,5 +1,5 @@
 import React from "react";
-import userLogo from "./photo/person-grey.png";
+import userLogo from "../photo/person-grey.png";
 
 const Navbar = () => {
   const handleItemClick = (route) => {
