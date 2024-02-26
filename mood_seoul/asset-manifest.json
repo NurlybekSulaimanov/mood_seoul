@@ -1,0 +1,33 @@
+{
+  "files": {
+    "main.css": "/mood_seoul/static/css/main.cf53f3b7.css",
+    "main.js": "/mood_seoul/static/js/main.87e7f12a.js",
+    "static/media/linking-park.jpg": "/mood_seoul/static/media/linking-park.37f86ecb3eabc17dca21.jpg",
+    "static/media/1.jpg": "/mood_seoul/static/media/1.8c867e5c4e3854e28752.jpg",
+    "static/media/2.jpg": "/mood_seoul/static/media/2.8927284c2686778f8379.jpg",
+    "static/media/3.jpg": "/mood_seoul/static/media/3.7cc195eed7926fcbd67c.jpg",
+    "static/media/infoPages.jpg": "/mood_seoul/static/media/infoPages.a34270bee1650554a469.jpg",
+    "static/media/5.jpg": "/mood_seoul/static/media/5.17412e7c673da89d3533.jpg",
+    "static/media/6.jpg": "/mood_seoul/static/media/6.7b1c47d659f7059af656.jpg",
+    "static/media/4.jpg": "/mood_seoul/static/media/4.500bca17428f657d4311.jpg",
+    "static/media/G-Idle.jpg": "/mood_seoul/static/media/G-Idle.4a0062e2f868bbe06e82.jpg",
+    "static/media/queen.jpg": "/mood_seoul/static/media/queen.180f7ef837fd79538ecc.jpg",
+    "static/media/7.jpg": "/mood_seoul/static/media/7.5535856ba3b778e86afb.jpg",
+    "static/media/mainPage.webp": "/mood_seoul/static/media/mainPage.711f016a996a02afa340.webp",
+    "static/media/table_map.jpg": "/mood_seoul/static/media/table_map.baeca743afc7b018f320.jpg",
+    "static/media/beatles.jpg": "/mood_seoul/static/media/beatles.37cf3fff6f8b6cfdbbdf.jpg",
+    "static/media/coldplay.jpg": "/mood_seoul/static/media/coldplay.2d8b3b649807715bbfc0.jpg",
+    "static/media/moodseoul.jpg": "/mood_seoul/static/media/moodseoul.d7c3667c9f9a20fd9667.jpg",
+    "static/media/minilogo.jpg": "/mood_seoul/static/media/minilogo.1238eab4de9653e54fc9.jpg",
+    "static/media/minilogoInfo.jpg": "/mood_seoul/static/media/minilogoInfo.0593eceb4d04bda85c66.jpg",
+    "static/media/insta.png": "/mood_seoul/static/media/insta.9531a7a685f60c10f929.png",
+    "static/media/youtube.png": "/mood_seoul/static/media/youtube.6751813e0bd17927950c.png",
+    "index.html": "/mood_seoul/index.html",
+    "main.cf53f3b7.css.map": "/mood_seoul/static/css/main.cf53f3b7.css.map",
+    "main.87e7f12a.js.map": "/mood_seoul/static/js/main.87e7f12a.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.cf53f3b7.css",
+    "static/js/main.87e7f12a.js"
+  ]
+}

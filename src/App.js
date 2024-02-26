@@ -1,34 +1,34 @@
-// Inside your App component (App.js)
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
-import Login from "./pages/login";
 import Home from "./pages/home";
-import Info from "./pages/info";
-import Register from "./pages/register";
-import SNSRegister from "./pages/snsregister";
 import Artists from "./pages/artists";
-import Prereservation from "./pages/prereservation";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Reservation from "./pages/reservation";
-import Band from "./pages/band";
-// import { RequireAuth } from "react-auth-kit";
-import Footer from "./components/footer";
 
 function App() {
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    // Parse the data from the global variable declared in the <script> tag
+    const userDataString = window.userData;
+    if (userDataString) {
+      const parsedUserData = JSON.parse(userDataString);
+      setUserData(parsedUserData);
+    }
+  }, []);
+
   return (
-    <>
+    <div style={{minHeight: "100vh" }}>
       <Routes>
+        {/* Pass userData as a prop to Home component */}
+        <Route path="/" element={<Home userData={userData} />} />
         <Route path="/artists" element={<Artists />} />
-        <Route path="/band" element={<Band />} />
-        <Route path="/prereservation" element={<Prereservation />} />
-        <Route path="/reservation" element={<Reservation />} />
-        <Route path="/" element={<Home />} />
-        <Route path="/info" element={<Info />} />
-        <Route path="/snsregister" element={<SNSRegister />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/allrsrv" element={<Reservation userData={userData} />} />
       </Routes>
-      <Footer />
-    </>
+      <ToastContainer />
+    </div>
   );
 }
+
 export default App;

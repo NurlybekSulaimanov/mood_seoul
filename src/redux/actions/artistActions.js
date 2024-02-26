@@ -21,7 +21,7 @@ export const fetchArtists = () => {
   return async (dispatch) => {
     dispatch(fetchArtistsRequest());
     try {
-      const response = await fetch('https://allthatjazz.kr/api/artist/gettotal');
+      const response = await fetch('http://localhost:5000/api/bands');
       const data = await response.json();
       dispatch(fetchArtistsSuccess(data));
     } catch (error) {

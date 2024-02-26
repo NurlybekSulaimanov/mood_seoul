@@ -1,13 +1,19 @@
 import { createStore, applyMiddleware, combineReducers } from "redux";
 import { thunk } from "redux-thunk";
 import artistReducer from "../reducer/artistReducer";
-import authReducer from "../reducer/authReduces";
+import tablesReducer from "../reducer/tablesReduces";
+import bookingReducer from "../reducer/bookingReducer";
+import userSeatsReducer from "../reducer/userSeatsReducer";
+import cancelBookingReducer from "../reducer/cancelBookingReducer";
 
 const rootReducer = combineReducers({
-    artists: artistReducer,
-    auth: authReducer,
-  });
-  
-  const store = createStore(rootReducer, applyMiddleware(thunk));
-  
-  export default store;
+  tables: tablesReducer,
+  artists: artistReducer,
+  booking: bookingReducer,
+  userSeats: userSeatsReducer,
+  bookingCancel: cancelBookingReducer,
+});
+
+const store = createStore(rootReducer, applyMiddleware(thunk));
+
+export default store;

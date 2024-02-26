@@ -1,145 +1,102 @@
 import React, { Component } from "react";
-import mainPhoto from "../photo/mainPage.webp";
-import minilogo from "../photo/minilogo.jpg";
+import { connect } from "react-redux";
 import Calendar from "react-calendar";
-import band from "../photo/G-Idle.jpg";
-import linking from "../photo/linking-park.jpg";
-import beatles from "../photo/beatles.jpg";
-import coldplay from "../photo/coldplay.jpg";
-import queen from "../photo/queen.jpg";
-import arrow from "../photo/rightArrow.png";
 import photo1 from "../photo/1.jpg";
-import photo2 from "../photo/2.jpg";
-import photo3 from "../photo/3.jpg";
-import photo4 from "../photo/4.jpg";
-import photo5 from "../photo/5.jpg";
-import photo6 from "../photo/6.jpg";
-import photo7 from "../photo/7.jpg";
-import logo from "../photo/moodseoul.jpg";
 import "../App.css";
-import { Navigate } from "react-router-dom";
-import Header from "../components/header";
-import Navbar from "../components/navbar";
-import BottomNavbar from "../components/bottomNavbar";
 import { format, addDays } from "date-fns";
 import CIcon from "@coreui/icons-react";
 import * as icon from "@coreui/icons";
 import { isEqual } from "lodash";
+import { fetchArtists } from "../redux/actions/artistActions";
+import { bookTables } from "../redux/actions/bookingAction";
+import { getUserSeats } from "../redux/actions/userSeatsActions";
+import { cancelBooking } from "../redux/actions/bookingCancelAction";
+import { Swiper, SwiperSlide } from "swiper/react";
+import tableIcon from "../photo/table.png";
+import barIcon from "../photo/bar.png";
+import windowIcon from "../photo/window.png";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
+// Import Swiper styles
+import "swiper/css";
 class Home extends Component {
+  constructor(props) {
+    super(props);
+    this.swiperRef = React.createRef();
+  }
+
   state = {
-    loginNav: false,
-    navRoute: null,
+    showAbout: false,
     screenWidth: window.innerWidth,
     scheduleDate: new Date(),
     perf: [],
-    bands: [
-      {
-        bandName: "G-Idle",
-        image: band,
-        performanceDate: new Date(),
-        time: "20:30 - 22:00",
-      },
-      {
-        bandName: "Linkin Park",
-        image: linking,
-        performanceDate: addDays(new Date(), 1),
-        time: "20:30 - 22:00",
-      },
-      {
-        bandName: "The Beatles",
-        image: beatles,
-        performanceDate: addDays(new Date(), 2),
-        time: "20:30 - 22:00",
-      },
-      {
-        bandName: "Coldplay",
-        image: coldplay,
-        performanceDate: addDays(new Date(), 3),
-        time: "20:30 - 22:00",
-      },
-      {
-        bandName: "Queen",
-        image: queen,
-        performanceDate: addDays(new Date(), 4),
-        time: "20:30 - 22:00",
-      },
-      {
-        bandName: "Led Zeppelin",
-        image: linking,
-        performanceDate: addDays(new Date(), 5),
-        time: "20:30 - 22:00",
-      },
-      {
-        bandName: "Pink Floyd",
-        image: beatles,
-        performanceDate: addDays(new Date(), 6),
-        time: "20:30 - 22:00",
-      },
-      {
-        bandName: "Metallica",
-        image: coldplay,
-        performanceDate: addDays(new Date(), 7),
-        time: "20:30 - 22:00",
-      },
-      {
-        bandName: "Radiohead",
-        image: queen,
-        performanceDate: addDays(new Date(), 8),
-        time: "20:30 - 22:00",
-      },
-      {
-        bandName: "U2",
-        image: logo,
-        performanceDate: addDays(new Date(), 9),
-        time: "20:30 - 22:00",
-      },
-      {
-        bandName: "Nirvana",
-        image: logo,
-        performanceDate: addDays(new Date(), 10),
-        time: "20:30 - 22:00",
-      },
-    ],
     havePerfToday: false,
+    people: null,
+    time: null,
+    table: null,
+    request: "",
+    requestInput: false,
+    tableEmpty: false,
+    peopleEmpty: false,
+    timeEmpty: false,
+    userId: null,
+    userName: null,
+    phone: null,
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { bands, scheduleDate } = this.state;
-
-    // Find the band matching the current scheduleDate
-    const matchingBand = bands.find(
+    const { scheduleDate, perf } = this.state;
+    const { artists } = this.props;
+    const matchingBand = artists.find(
       (band) =>
         format(scheduleDate, "yyyy-MMM-dd") ===
-        format(band.performanceDate, "yyyy-MMM-dd")
+        format(band.perf_date, "yyyy-MMM-dd")
     );
-
-    // Check if scheduleDate or matchingBand have changed
     if (
       scheduleDate !== prevState.scheduleDate ||
-      !isEqual(matchingBand, prevState.perf)
+      !isEqual(matchingBand, perf)
     ) {
       this.setState({
         perf: matchingBand,
         havePerfToday: matchingBand !== undefined,
       });
     }
+    if (this.props.userData && !this.state.userId && this.props.artists) {
+      this.setState({
+        userId: this.props.userData.user_id,
+        userName: this.props.userData.user_nm,
+        phone: this.props.userData.phone,
+      });
+    }
   }
 
   componentDidMount() {
-    const { bands, scheduleDate, perf } = this.state;
+    const { scheduleDate, perf } = this.state;
+    const { artists } = this.props;
     window.addEventListener("resize", this.handleResize);
-
-    const matchingBand = bands.find(
+    this.props.fetchArtists();
+    const matchingBand = artists.find(
       (band) =>
         format(scheduleDate, "yyyy-MMM-dd") ===
-        format(band.performanceDate, "yyyy-MMM-dd")
+        format(band.perf_date, "yyyy-MMM-dd")
     );
     if (matchingBand && matchingBand !== perf) {
       this.setState({
         perf: matchingBand,
         havePerfToday: matchingBand !== undefined,
       });
+    }
+    // Retrieve the toast message from localStorage
+    const toastMessage = localStorage.getItem("toastMessage");
+
+    // Check if a toast message exists
+    if (toastMessage) {
+      // Display the toast message
+      toast.success(toastMessage);
+
+      // Clear the toast message from localStorage
+      localStorage.removeItem("toastMessage");
     }
   }
 
@@ -153,99 +110,17 @@ class Home extends Component {
     });
   };
 
-  _aboutComponent() {
-    const { screenWidth } = this.state;
-    return (
-      <div>
-        <div
-          style={{
-            marginTop: "1rem",
-            marginBottom: "1rem",
-            display: "flex",
-            backgroundColor: "black",
-            flexDirection: screenWidth < 600 ? "column" : "row",
-            height: "400px",
-          }}
-        >
-          <img
-            src={mainPhoto}
-            alt="main"
-            style={{
-              width: screenWidth < 600 ? "100%" : "50%",
-              height: screenWidth < 600 ? "70%" : "100%",
-            }}
-          />
-          <div
-            style={{
-              marginLeft: "1rem",
-              alignItems: "center",
-              color: "white",
-              paddingTop: screenWidth < 600 ? "1rem" : "4rem",
-            }}
-          >
-            <span style={{ color: "#C20019" }}>MOOD SEOUL</span>
-            <br />
-            <span style={{ fontSize: "50px" }}>맛의 여행</span>
-          </div>
-        </div>
-        <div style={{ display: "flex", borderBottom: "1px solid" }}>
-          {screenWidth <= 700 && (
-            <span
-              style={{
-                fontSize: "20px",
-                display: "flex",
-                fontWeight: "bold",
-                marginTop: "-.75rem",
-                letterSpacing: "-2px",
-              }}
-            >
-              MOOD SEOUL에 오신 것을 환영합니다!
-              <img
-                src={minilogo}
-                alt="miniLogo"
-                style={{
-                  height: "30px",
-                  width: "30px",
-                  borderRadius: "50%",
-                  marginLeft: ".5rem",
-                  marginBottom: ".3rem",
-                }}
-              />
-            </span>
-          )}
-          {screenWidth >= 700 && (
-            <span
-              style={{
-                fontSize: "27px",
-                display: "flex",
-                fontWeight: "bold",
-                marginTop: "-.75rem",
-                letterSpacing: "-2px",
-              }}
-            >
-              기분을 높여주세요! 감각을 돋우세요 - MOOD SEOUL에 오신 것을
-              환영합니다!
-              <img
-                src={minilogo}
-                alt="miniLogo"
-                style={{
-                  height: "35px",
-                  width: "35px",
-                  borderRadius: "50%",
-                  marginLeft: ".5rem",
-                }}
-              />
-            </span>
-          )}
-        </div>
-      </div>
-    );
-  }
   _schedule() {
-    const { screenWidth, scheduleDate, perf, havePerfToday } = this.state;
+    const { screenWidth, scheduleDate, perf, havePerfToday, showAbout } =
+      this.state;
 
     return (
-      <div style={{ borderBottom: "1px solid" }}>
+      <div
+        style={{
+          borderBottom: "1px solid",
+          display: showAbout ? "none" : "block",
+        }}
+      >
         <div style={{ marginTop: ".5rem" }}>
           <span
             style={{ fontSize: "1.6rem", color: "#C20019", fontWeight: "700" }}
@@ -298,7 +173,7 @@ class Home extends Component {
                 onClick={() => {
                   this.setState({ scheduleDate: addDays(scheduleDate, -1) });
                 }}
-                style={{ cursor: "pointer" }}
+                style={{ cursor: "pointer", height: "20px", width: "20px" }}
               />
               <span>{format(scheduleDate, "yyyy-MMM-dd")}</span>
               <CIcon
@@ -307,16 +182,16 @@ class Home extends Component {
                 onClick={() => {
                   this.setState({ scheduleDate: addDays(scheduleDate, 1) });
                 }}
-                style={{ cursor: "pointer" }}
+                style={{ cursor: "pointer", height: "20px", width: "20px" }}
               />
             </div>
             {havePerfToday && (
               <div
-                key={perf.bandName}
+                key={perf.name}
                 style={{
                   display:
                     format(scheduleDate, "yyyy-MMM-dd") ===
-                    format(perf.performanceDate, "yyyy-MMM-dd")
+                    format(perf.perf_date, "yyyy-MMM-dd")
                       ? "flex"
                       : "none",
                   flexDirection: "column",
@@ -332,18 +207,44 @@ class Home extends Component {
                     marginTop: ".5rem",
                   }}
                 >
-                  {perf.bandName}
+                  {perf.name}
                 </span>
-                <img
-                  src={perf.image}
-                  alt="band"
+                <div
                   style={{
                     height: "65%",
-                    width: "85%",
+                    maxWidth: "85%",
+                    marginBottom: ".5rem",
+                    overflow: "hidden",
+                  }}
+                >
+                  <img
+                    src={`/asset/frontend/src/photo/${perf.image}`}
+                    alt="band"
+                    style={{ height: "100%" }}
+                  />
+                </div>
+                <span style={{ fontSize: "1.5rem" }}>{perf.perf_time}</span>
+                <div
+                  style={{
+                    fontSize: "1rem",
+                    borderRadius: "2rem",
+                    width: "100px",
+                    height: "30px",
+                    border: "1px solid",
+                    display: "flex",
+                    justifyContent: "center",
                     marginBottom: ".5rem",
                   }}
-                />
-                <span style={{ fontSize: "1.5rem" }}>{perf.time}</span>
+                >
+                  <button
+                    onClick={() => {
+                      this.props.getUserSeats(this.state.userId, perf.band_id);
+                      this.setState({ showAbout: true });
+                    }}
+                  >
+                    Reservation
+                  </button>
+                </div>
               </div>
             )}
           </div>
@@ -351,281 +252,653 @@ class Home extends Component {
       </div>
     );
   }
-  _artists() {
-    const { screenWidth } = this.state;
-    const bands = [
-      {
-        bandName: "Linkin Park",
-        image: linking,
-        artists: [
-          "Chester Bennington",
-          "Mike Shinoda",
-          "Joe Hahn",
-          "Brad Delson",
-          "Rob Bourdon",
-        ],
-        genre: "Alternative Rock",
-      },
-      {
-        bandName: "The Beatles",
-        image: beatles,
-        artists: [
-          "John Lennon",
-          "Paul McCartney",
-          "George Harrison",
-          "Ringo Starr",
-        ],
-        genre: "Rock",
-      },
-      {
-        bandName: "Coldplay",
-        image: coldplay,
-        artists: [
-          "Chris Martin",
-          "Guy Berryman",
-          "Jonny Buckland",
-          "Will Champion",
-        ],
-        genre: "Pop Rock",
-      },
-      {
-        bandName: "Queen",
-        image: queen,
-        artists: [
-          "F#C20019die Mercury",
-          "Brian May",
-          "Roger Taylor",
-          "John Deacon",
-        ],
-        genre: "Rock",
-      },
-    ];
+
+  _reservation() {
+    const rsrv =
+      this.props.userSeats && this.props.userSeats.length > 0
+        ? this.props.userSeats[0]
+        : null;
+    const {
+      screenWidth,
+      scheduleDate,
+      perf,
+      havePerfToday,
+      showAbout,
+      request,
+      people,
+      time,
+      table,
+      timeEmpty,
+      tableEmpty,
+      peopleEmpty,
+    } = this.state;
+    const numbers = Array.from({ length: 10 }, (_, index) => index + 1);
+    const timeSlots = [];
+    for (let hour = 5; hour <= 8; hour++) {
+      for (let minute = 0; minute < 60; minute += 30) {
+        const formattedHour = hour < 10 ? `0${hour}` : hour;
+        const formattedMinute = minute === 0 ? "00" : minute;
+        const time = `${formattedHour}:${formattedMinute}`;
+        timeSlots.push(time);
+      }
+    }
     return (
       <div
         style={{
           borderBottom: "1px solid",
-          display: "flex",
-          flexDirection: "column",
+          display: showAbout ? "block" : "none",
         }}
       >
-        <div style={{ marginTop: ".5rem", borderBottom: "1px solid" }}>
+        <div style={{ marginTop: ".5rem", textAlign: "center" }}>
           <span
             style={{ fontSize: "1.6rem", color: "#C20019", fontWeight: "700" }}
           >
-            아티스트
+            예약
           </span>
         </div>
         <div
-          style={
-            screenWidth < 700
-              ? { display: "flex", flexDirection: "column" }
-              : { display: "flex", position: "relative" }
-          }
+          style={{
+            display: "flex",
+            flexDirection: screenWidth < 600 ? "column" : "row",
+          }}
         >
           <div
-            style={
-              screenWidth < 700
-                ? {
-                    top: "0",
-                    left: "0",
-                    display: "flex",
-                    flexDirection: "column",
-                  }
-                : {
-                    position: "absolute",
-                    top: "0",
-                    right: "0",
-                    width: "200px",
-                    display: "flex",
-                    flexDirection: "column",
-                  }
-            }
+            style={{
+              width: screenWidth < 600 ? "100%" : "50%",
+              display: "flex",
+              flexDirection: "column",
+              height: "435px",
+            }}
           >
-            <div
-              style={{
-                fontWeight: "700",
-                borderBottom: "1px solid",
-                display: "flex",
-                alignItems: "center",
-                height: "50px",
-                cursor: "pointer",
-              }}
-            >
-              <img
-                src={arrow}
-                alt="arrow"
-                style={{ width: "20px", height: "10px", marginRight: "10px" }}
-              />
-              MONTHLY BEST
-            </div>
-            <div
-              style={{
-                fontWeight: "700",
-                borderBottom: "1px solid",
-                display: "flex",
-                alignItems: "center",
-                height: "50px",
-                cursor: "pointer",
-              }}
-            >
-              {" "}
-              <img
-                src={arrow}
-                alt="arrow"
-                style={{ width: "20px", height: "10px", marginRight: "10px" }}
-              />
-              NEW ARTISTS
-            </div>
-            <div
-              style={{
-                fontWeight: "700",
-                borderBottom: "1px solid",
-                display: "flex",
-                alignItems: "center",
-                height: "50px",
-                cursor: "pointer",
-              }}
-            >
-              {" "}
-              <img
-                src={arrow}
-                alt="arrow"
-                style={{ width: "20px", height: "10px", marginRight: "10px" }}
-              />
-              MORE
-            </div>
-          </div>
-          <div
-            style={
-              screenWidth < 700
-                ? { display: "grid", gridTemplateColumns: "repeat(2, 1fr)" }
-                : { paddingRight: "200px", display: "flex" }
-            }
-          >
-            {bands.map((band, index) => (
+            {havePerfToday && (
               <div
-                key={index}
+                key={perf.name}
                 style={{
-                  marginBottom: ".5rem",
-                  display: "flex",
+                  display:
+                    format(scheduleDate, "yyyy-MMM-dd") ===
+                    format(perf.perf_date, "yyyy-MMM-dd")
+                      ? "flex"
+                      : "none",
                   flexDirection: "column",
                   alignItems: "center",
-                  width: screenWidth < 700 ? "100%" : "25%",
-                  fontSize: "1.15rem",
+                  justifyContent: "center",
+                  height: "390px",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "2rem",
+                    marginBottom: ".5rem",
+                    marginTop: ".5rem",
+                  }}
+                >
+                  {perf.name}
+                </span>
+                <div
+                  style={{
+                    height: "100%",
+                    maxWidth: "100%",
+                    marginBottom: ".5rem",
+                    overflow: "hidden",
+                  }}
+                >
+                  <img
+                    src={`/asset/frontend/src/photo/${perf.image}`}
+                    alt="band"
+                    style={{ height: "100%" }}
+                  />
+                </div>
+                <span style={{ fontSize: "1.5rem" }}>{perf.perf_time}</span>
+                <span style={{ marginBottom: ".5rem", textAlign: "center" }}>
+                  {perf.description}
+                </span>
+                <span style={{ textAlign: "center" }}>{perf.members}</span>
+              </div>
+            )}
+          </div>
+          <div
+            style={{
+              width: screenWidth < 600 ? "100%" : "50%",
+              display: !Array.isArray(this.props.userSeats) ? "flex" : "none",
+              flexDirection: "column",
+              height: "435px",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginTop: "1rem",
+              }}
+            >
+              <div
+                style={{
+                  width: "5rem",
+                  color: this.state.people
+                    ? "#AC8B68"
+                    : peopleEmpty
+                    ? "red"
+                    : "black",
+                }}
+              >
+                인원수
+              </div>
+              {/* Map over the numbers array and create a round div for each number */}
+              <Swiper slidesPerView={screenWidth < 1000 ? 6 : 10}>
+                {numbers.map((number) => (
+                  <SwiperSlide key={number}>
+                    <div
+                      key={number}
+                      className="round-div"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        borderRadius: "50%",
+                        backgroundColor:
+                          this.state.people === number ? "#AC8B68" : "#ccc",
+                        display: "inline-flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginRight: "10px",
+                        fontSize: "16px",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => {
+                        this.setState({ people: number });
+                      }}
+                    >
+                      {number}명
+                    </div>
+                  </SwiperSlide>
+                ))}{" "}
+              </Swiper>
+            </div>
+            <div
+              style={{
+                marginTop: "2rem",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <div
+                style={{
+                  marginRight: "1rem",
+                  width: "5rem",
+                  color: this.state.time
+                    ? "#AC8B68"
+                    : timeEmpty
+                    ? "red"
+                    : "black",
+                }}
+              >
+                시간 선택
+              </div>
+              <Swiper slidesPerView={screenWidth < 1000 ? 4 : 6}>
+                {timeSlots.map((time, index) => (
+                  <SwiperSlide key={index}>
+                    <div
+                      style={{
+                        width: "80px",
+                        height: "40px",
+                        borderRadius: "5px",
+                        marginRight: "1rem",
+                        backgroundColor:
+                          this.state.time === time ? "#AC8B68" : "#ccc",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        fontSize: "16px",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => {
+                        this.setState({ time: time });
+                      }}
+                    >
+                      오후 {time}
+                    </div>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            </div>
+            <div
+              style={{
+                marginTop: "2rem",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  width: "5rem",
+                  color: this.state.table
+                    ? "#AC8B68"
+                    : tableEmpty
+                    ? "red"
+                    : "black",
+                }}
+              >
+                옵션 선택
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-start",
+                  width: "100%",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    cursor: "pointer",
+                    borderRadius: "5px",
+                    backgroundColor:
+                      this.state.table === "테이블" ? "#AC8B68" : "transparent",
+                    width: "25%",
+                  }}
+                  onClick={() => {
+                    this.setState({ table: "테이블" });
+                  }}
+                >
+                  <img
+                    src={tableIcon}
+                    alt="tableIcon"
+                    style={{ width: "35px", height: "35px" }}
+                  />
+                  <span>테이블</span>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    cursor: "pointer",
+                    borderRadius: "5px",
+                    backgroundColor:
+                      this.state.table === "바" ? "#AC8B68" : "transparent",
+                    width: "25%",
+                  }}
+                  onClick={() => {
+                    this.setState({ table: "바" });
+                  }}
+                >
+                  <img
+                    src={barIcon}
+                    alt="barIcon"
+                    style={{ width: "35px", height: "35px" }}
+                  />
+                  <span>바</span>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    cursor: "pointer",
+                    borderRadius: "5px",
+                    backgroundColor:
+                      this.state.table === "창가바" ? "#AC8B68" : "transparent",
+                    width: "25%",
+                  }}
+                  onClick={() => {
+                    this.setState({ table: "창가바" });
+                  }}
+                >
+                  <img
+                    src={windowIcon}
+                    alt="windowIcon"
+                    style={{ width: "35px", height: "35px" }}
+                  />
+                  <span>창가바</span>
+                </div>
+              </div>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginTop: "1rem",
+              }}
+            >
+              <div
+                style={{
+                  width: "5rem",
+                  color:
+                    this.state.requestInput || request.length > 0
+                      ? "#AC8B68"
+                      : "black",
+                }}
+              >
+                요청사항
+              </div>
+              <input
+                style={{
+                  width: "100%",
+                  borderRadius: "5px",
+                  height: "50px",
+                  paddingLeft: "10px",
+                  border: "1px solid #ccc", // Default border color
+                  outline: "none", // Remove default outline
+                }}
+                maxLength={255}
+                value={request}
+                onChange={(event) => {
+                  this.setState({ request: event.target.value });
+                }}
+                onFocus={(event) => {
+                  event.target.style.borderColor = "#AC8B68"; // Change border color when focused
+                  this.setState({ requestInput: true });
+                }}
+                onBlur={(event) => {
+                  event.target.style.borderColor = "#ccc"; // Restore default border color when focus is lost
+                  this.setState({ requestInput: false });
+                }}
+              ></input>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-evenly",
+                marginTop: "5rem",
+              }}
+            >
+              <button
+                style={{
+                  borderRadius: "15px",
+                  border: "1px solid",
+                  width: "130px",
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  window.location.reload();
+                }}
+              >
+                Back
+              </button>
+              <button
+                style={{
+                  borderRadius: "15px",
+                  border: "1px solid",
+                  width: "130px",
+                  cursor: "pointer",
+                }}
+                onClick={async () => {
+                  if (!people || !time || !table) {
+                    toast.error("인원수, 시간, 테이블 종류를 입력해주세요");
+                    this.setState({
+                      tableEmpty: true,
+                      peopleEmpty: true,
+                      timeEmpty: true,
+                    });
+                  } else {
+                    await this.props.bookTables(
+                      this.state.userId,
+                      perf.band_id,
+                      this.state.userName,
+                      this.state.phone,
+                      request,
+                      time,
+                      people,
+                      table
+                    );
+                    if (this.props.bookingStatus.bookingStatus) {
+                      localStorage.setItem(
+                        "toastMessage",
+                        "예약이 성공했습니다"
+                      );
+
+                      // Reload the page
+                      window.location.reload();
+                    }
+                  }
+                }}
+              >
+                Reserve Table
+              </button>
+            </div>
+          </div>
+          {Array.isArray(this.props.userSeats) &&
+            this.props.userSeats.length > 0 && (
+              <div
+                style={{
+                  width: screenWidth < 600 ? "100%" : "50%",
+                  display: "flex",
+                  flexDirection: "column",
+                  height: "435px",
+                  justifyContent: "space-evenly",
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: "2rem",
+                    color: "#AC8B68",
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  예약 정보
+                </div>
+                <div style={{ display: "flex", marginTop: "1rem" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      width: "25%",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div style={{ fontSize: "1.5rem", color: "#AC8B68" }}>
+                      날짜
+                    </div>
+                    <div>{format(perf.perf_date, "yyyy-MM-dd")}</div>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      width: "25%",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div style={{ fontSize: "1.5rem", color: "#AC8B68" }}>
+                      시간
+                    </div>
+                    <div>{rsrv.time}pm</div>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      width: "25%",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div style={{ fontSize: "1.5rem", color: "#AC8B68" }}>
+                      인원
+                    </div>
+                    <div>{rsrv.people} 명</div>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      width: "25%",
+                      alignItems: "center",
+                      marginRight: "1rem",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: "1.5rem",
+                        color: "#AC8B68",
+                        width: "max-content",
+                      }}
+                    >
+                      테이블 유형
+                    </div>
+                    <div>{rsrv.table_type}</div>
+                  </div>
+                </div>
+                <div
+                  style={{
+                    marginTop: "3rem",
+                    display: "flex",
+                    justifyContent: "space-around",
+                  }}
+                >
+                  <button
+                    style={{
+                      borderRadius: "15px",
+                      border: "1px solid",
+                      width: "130px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      window.location.reload();
+                    }}
+                  >
+                    Back
+                  </button>
+                  <button
+                    style={{
+                      borderRadius: "15px",
+                      border: "1px solid",
+                      width: "130px",
+                      cursor: "pointer",
+                    }}
+                    onClick={async () => {
+                      await this.props.cancelBooking(
+                        rsrv.user_id,
+                        rsrv.band_id
+                      );
+                      if (this.props.bookingCancelStatus.bookingStatus) {
+                        // Store the toast message in localStorage
+                        localStorage.setItem(
+                          "toastMessage",
+                          "예약이 성공적으로 취소되었습니다"
+                        );
+
+                        // Reload the page
+                        window.location.reload();
+                      }
+                    }}
+                  >
+                    예약 취소
+                  </button>
+                </div>
+              </div>
+            )}
+        </div>
+      </div>
+    );
+  }
+
+  _intro() {
+    const { screenWidth } = this.state;
+    const swiperCount = 4;
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: screenWidth < 600 ? "column" : "row",
+          marginTop: "2rem",
+        }}
+      >
+        <Swiper
+          slidesPerView={1}
+          style={{ width: screenWidth < 600 ? "100%" : "50%" }}
+        >
+          {[...Array(swiperCount).keys()].map((index) => (
+            <SwiperSlide key={index}>
+              <div
+                className="image-div"
+                style={{
+                  width: "95%",
+                  height: "435px",
+                  display: "inline-flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginRight: "10px",
+                  cursor: "pointer",
+                  position: "relative",
+                }}
+                onClick={() => {
+                  /* Handle click event if needed */
                 }}
               >
                 <img
-                  src={band.image}
-                  alt={band.bandName}
-                  style={{
-                    width: "100%",
-                    height: "170px",
-                    objectFit: "cover",
-                  }}
+                  src={`/asset/frontend/src/photo/intro-image${index + 1}.jpg`}
+                  alt={index}
+                  style={{ width: "100%", height: "435px" }}
                 />
-                <p style={{ marginBottom: ".5px" }}>{band.genre}</p>
-                <h3>{band.bandName}</h3>
-                <p
+                <div
                   style={{
-                    textAlign: "center",
-                    margin: "0 .5rem",
-                    fontSize: "11px",
+                    position: "absolute",
+                    bottom: "5px",
+                    right: "5px",
+                    backgroundColor: "rgba(0, 0, 0, 0.5)",
+                    color: "white",
+                    padding: "5px",
+                    borderRadius: "5px",
                   }}
                 >
-                  {band.artists.join(", ")}
-                </p>
+                  {index + 1}/{swiperCount}
+                </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-  _photos() {
-    const redirectToWebsite = () => {
-      const newWindow = window.open(
-        "https://www.instagram.com/mood.seoul_/?hl=en",
-        "_blank"
-      );
-      if (newWindow) {
-        newWindow.focus();
-      } else {
-        console.error("Popup window blocked");
-      }
-    };
-    const photoList = [
-      { id: 1, src: photo1, alt: "Photo 1" },
-      { id: 2, src: photo2, alt: "Photo 2" },
-      { id: 3, src: photo3, alt: "Photo 3" },
-      { id: 4, src: photo4, alt: "Photo 4" },
-      { id: 5, src: photo5, alt: "Photo 5" },
-      { id: 6, src: photo6, alt: "Photo 6" },
-      { id: 7, src: photo7, alt: "Photo 7" },
-    ];
-    return (
-      <div
-        style={{
-          borderBottom: "1px solid",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <div style={{ marginBottom: "1rem" }}>
-          <span
-            style={{ fontSize: "1.6rem", color: "#C20019", fontWeight: "700" }}
+            </SwiperSlide>
+          ))}
+        </Swiper>
+        <div
+          style={{
+            width: screenWidth < 600 ? "100%" : "50%",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-around",
+            alignItems: "center",
+          }}
+        >
+          <h2
+            style={{ fontSize: "3rem", fontWeight: "bold", color: "#AC8B68" }}
           >
-            사진
+            무드서울 LIVE
+          </h2>
+          <span style={{ fontSize: "1.5rem", lineHeight: "3rem" }}>
+            무드서울 2F 서울의 사계절을 담은 파노라마뷰를 담은 복합 엔터테인먼트
+            다이닝 공간으로, 무드서울의 황홀한 미식을 다양한 주류를 함께 즐기실
+            수 있 습니다.일주일간 서울의 야경을 배경으로 펼쳐지는 라이브 공연과
+            함께 환상 적이고 로맨틱한 순간을 함께 할수 있습니다.
           </span>
-          <div
-            style={{
-              backgroundColor: "black",
-              padding: ".5rem",
-              overflowX: "scroll",
-              display: "flex",
-            }}
-          >
-            {photoList.map((photo) => (
-              <img
-                key={photo.id}
-                src={photo.src}
-                alt={photo.alt}
-                style={{
-                  width: "150px",
-                  height: "200px",
-                  marginLeft: ".5rem",
-                  cursor: "pointer",
-                }}
-                onClick={redirectToWebsite}
-              />
-            ))}
-          </div>
         </div>
       </div>
     );
   }
+
   render() {
-    const { screenWidth } = this.state;
+    console.log(this.props.bookingCancelStatus.bookingStatus);
     return (
-      <div
-        className="App"
-        style={{
-          padding: screenWidth < 700 ? "5px" : "1rem 3rem",
-          display: "flex",
-          justifyContent: "center",
-          position: "relative",
-        }}
-      >
-        <div style={{ maxWidth: "920px", width: "100%" }}>
-          <Header />
-          {screenWidth <= 700 ? <BottomNavbar /> : <Navbar />}
-          {this._aboutComponent()}
-          {this._schedule()}
-          {this._artists()}
-          {this._photos()}
-          {this.state.loginNav && <Navigate to={this.state.navRoute} />}
-        </div>
+      <div style={{ width: "100%" }}>
+        {this._intro()}
+        {this._schedule()}
+        {this._reservation()}
       </div>
     );
   }
 }
-export default Home;
+
+const mapStateToProps = (state) => ({
+  artists: state.artists.artists,
+  tableLoading: state.tables.loading,
+  bookingStatus: state.booking,
+  userSeats: state.userSeats.userSeats,
+  bookingCancelStatus: state.bookingCancel,
+});
+
+export default connect(mapStateToProps, {
+  fetchArtists,
+  bookTables,
+  getUserSeats,
+  cancelBooking,
+})(Home);
